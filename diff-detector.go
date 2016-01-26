@@ -88,8 +88,8 @@ func _main() (st int) {
 		return
 	}
 	// fmt.Printf("curPath:%s\n",curFile.Name())
-	defer curFile.Close()
-
+	defer os.Remove(curFile.Name())
+	
 	err = runCmd(curFile, opts)
 	if err != nil {
 		fmt.Printf("Error: %s",err)
