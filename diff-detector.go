@@ -9,6 +9,7 @@ import (
 	"crypto/md5"
 	"os"
 	"os/exec"
+	"os/user"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -79,7 +80,8 @@ func _main() (st int) {
 		hasher.Write([]byte(v))
 	}
 	commandKey := fmt.Sprintf("%x",hasher.Sum(nil))
-	prevPath := filepath.Join(tmpDir,"diff-detector-" + commandKey)
+	curUser, _ := user.Current()
+	prevPath := filepath.Join(tmpDir, curUser.Uid + "-diff-detector-" + commandKey)
 	// fmt.Printf("prevPath:%s diffCmd:%s\n",prevPath,diffCmd)
 
 	curFile, err := ioutil.TempFile(tmpDir, "temp")
@@ -89,7 +91,7 @@ func _main() (st int) {
 	}
 	// fmt.Printf("curPath:%s\n",curFile.Name())
 	defer os.Remove(curFile.Name())
-	
+
 	err = runCmd(curFile, opts)
 	if err != nil {
 		fmt.Printf("Error: %s",err)
