@@ -145,9 +145,9 @@ func _main() (st int) {
 		diffRetString = regexp.MustCompile("(\r\n|\r|\n)$").ReplaceAllString(diffRetString, "")
 		diffRetString = regexp.MustCompile("(\r\n|\r|\n)").ReplaceAllString(diffRetString, "\\n")
 		if ( len(diffRetString) > 128 ) {
-			fmt.Printf("NG: detect difference: %s...\n", diffRetString[0:128])
+			fmt.Printf("NG: detect difference: ```%s...```\n", diffRetString[0:128])
 		} else {
-			fmt.Printf("NG: detect difference: %s\n", diffRetString)
+			fmt.Printf("NG: detect difference: ```%s```\n", diffRetString)
 		}
 		st = 2
 	} else {
