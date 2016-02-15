@@ -128,6 +128,7 @@ func _main() (st int) {
 			return
 		}
 		defer curOpen.Close()
+		fileinfo, _ := curOpen.Stat()
 		data := make([]byte, 128)
 		count, err := curOpen.Read(data)
 		if err != nil {
@@ -136,16 +137,18 @@ func _main() (st int) {
 		}
 		cur := string(data[0:count])
 		cur = regexp.MustCompile("(\r\n|\r|\n)$").ReplaceAllString(cur, "")
-		cur = regexp.MustCompile("(\r\n|\r|\n)").ReplaceAllString(cur, "\\n")
-		fmt.Printf("OK: no difference: %s..\n", cur)
+		if ( fileinfo.Size() > 128 ) {
+			fmt.Printf("OK: no difference: ```%s```...\n", cur)
+		} else {
+			fmt.Printf("OK: no difference: ```%s```\n", cur)
+		}
 		st = 0
 	} else if ( regexp.MustCompile("exit status 1").MatchString(diffError.Error()) ) {
 		diffRet := strings.Split(string(diffOut),"\n")
 		diffRetString := strings.Join(diffRet[2:],"\n")
 		diffRetString = regexp.MustCompile("(\r\n|\r|\n)$").ReplaceAllString(diffRetString, "")
-		diffRetString = regexp.MustCompile("(\r\n|\r|\n)").ReplaceAllString(diffRetString, "\\n")
-		if ( len(diffRetString) > 128 ) {
-			fmt.Printf("NG: detect difference: ```%s...```\n", diffRetString[0:128])
+		if ( len(diffRetString) > 512 ) {
+			fmt.Printf("NG: detect difference: ```%s...```\n", diffRetString[0:512])
 		} else {
 			fmt.Printf("NG: detect difference: ```%s```\n", diffRetString)
 		}
