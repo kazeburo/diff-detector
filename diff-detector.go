@@ -138,7 +138,7 @@ func _main() (st int) {
 		cur := string(data[0:count])
 		cur = regexp.MustCompile("(\r\n|\r|\n)$").ReplaceAllString(cur, "")
 		if ( fileinfo.Size() > 128 ) {
-			fmt.Printf("OK: no difference: ```%s```...\n", cur)
+			fmt.Printf("OK: no difference: ```%s...```\n", cur)
 		} else {
 			fmt.Printf("OK: no difference: ```%s```\n", cur)
 		}
