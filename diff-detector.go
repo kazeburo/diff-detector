@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"bytes"
 	"path/filepath"
 	"io/ioutil"
 	"strings"
@@ -21,20 +22,30 @@ type options struct {
 
 func runCmd(curFile *os.File, opts *options ) error {
 	cmd := exec.Command(opts.OptCommand, opts.OptArgs...)
+	var stderr bytes.Buffer
 	cmd.Stdout = curFile
+	cmd.Stderr = &stderr
 	if err := cmd.Start(); err != nil {
 		return err
 	}
-	cmd.Wait()
+	err := cmd.Wait()
+	if err != nil {
+		return fmt.Errorf("%s - %s",err,stderr.String());
+	}
 	return nil
 }
 
 func runCopy(from string, to string ) error {
 	cmd := exec.Command("cp", from, to)
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
 	if err := cmd.Start(); err != nil {
 		return err
 	}
-	cmd.Wait()
+	err := cmd.Wait()
+	if err != nil {
+		return fmt.Errorf("%s - %s",err,stderr.String());
+	}
 	return nil
 }
 
