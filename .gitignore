@@ -23,6 +23,8 @@ _testmain.go
 *.test
 *.prof
 
+old/
+dist/
 diff-detector
+diff-detector-*
 *~
-
