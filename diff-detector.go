@@ -19,7 +19,7 @@ type options struct {
 	OptArgs       []string
 	OptCommand    string
 	OptIdentifier string `long:"identifier" arg:"String" description:"indetify a file store the command result with given string"`
-	OptWarn       bool   `long:"warning" description:"Set the error level to warning"`
+	OptWarn       bool   `short:"w" long:"warn" description:"Set the error level to warning"`
 }
 
 func runCmd(curFile *os.File, opts *options) error {
