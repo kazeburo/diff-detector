@@ -10,19 +10,24 @@ import (
 	"os/user"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/jessevdk/go-flags"
 )
+
+// version by Makefile
+var version string
 
 type options struct {
 	OptArgs       []string
 	OptCommand    string
 	OptIdentifier string `long:"identifier" arg:"String" description:"indetify a file store the command result with given string"`
 	OptWarn       bool   `short:"w" long:"warn" description:"Set the error level to warning"`
+	Version       bool   `short:"v" long:"version" description:"Show version"`
 }
 
-func runCmd(curFile *os.File, opts *options) error {
+func runCmd(curFile *os.File, opts options) error {
 	cmd := exec.Command(opts.OptCommand, opts.OptArgs...)
 	var stderr bytes.Buffer
 	cmd.Stdout = curFile
@@ -60,18 +65,34 @@ func main() {
 	os.Exit(_main())
 }
 
+func printVersion() {
+	fmt.Printf(`%s %s
+Compiler: %s %s
+`,
+		os.Args[0],
+		version,
+		runtime.Compiler,
+		runtime.Version())
+}
+
 func _main() (st int) {
 	st = 1
-	opts := &options{OptIdentifier: ""}
-	parser := flags.NewParser(opts, flags.PassDoubleDash)
+	opts := options{OptIdentifier: ""}
+	parser := flags.NewParser(&opts, flags.HelpFlag|flags.PassDoubleDash)
 	parser.Name = "diff-detector"
 	parser.Usage = "[OPTIONS] -- command args1 args2"
-
 	args, err := parser.Parse()
-
-	if err != nil || len(args) == 0 {
-		parser.WriteHelp(os.Stdout)
-		return
+	if opts.Version {
+		printVersion()
+		os.Exit(0)
+	}
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+	if len(args) == 0 {
+		parser.WriteHelp(os.Stderr)
+		os.Exit(1)
 	}
 
 	opts.OptCommand = args[0]
