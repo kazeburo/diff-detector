@@ -19,6 +19,7 @@ type options struct {
 	OptArgs       []string
 	OptCommand    string
 	OptIdentifier string `long:"identifier" arg:"String" description:"indetify a file store the command result with given string"`
+	OptWarn       bool   `short:"w" long:"warn" description:"Set the error level to warning"`
 }
 
 func runCmd(curFile *os.File, opts *options) error {
@@ -164,7 +165,11 @@ func _main() (st int) {
 		} else {
 			fmt.Printf("NG: detect difference: ```%s```\n", diffRetString)
 		}
-		st = 2
+		if opts.OptWarn {
+			st = 1
+		} else {
+			st = 2
+		}
 	} else {
 		fmt.Printf("Error: %s\n", diffError)
 	}
