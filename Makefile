@@ -1,5 +1,5 @@
 VERSION=0.0.9
-LDFLAGS=-ldflags "-X main.Version=${VERSION}"
+LDFLAGS=-ldflags "-w -s -X main.version=${VERSION}"
 GO111MODULE=on
 
 all: diff-detector
@@ -15,8 +15,10 @@ linux: diff-detector.go
 clean:
 	rm -rf diff-detector
 
+check:
+	go test ./...
+
 tag:
 	git tag v${VERSION}
 	git push origin v${VERSION}
 	git push origin master
-	goreleaser --rm-dist
