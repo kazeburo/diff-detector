@@ -47,4 +47,4 @@ command = "/usr/local/bin/diff-detector -- cat /etc/passwd"
 
 ## Install
 
-Please download release page or `mkr plugin install kazeburo/diff-detector`.
+Please download release page
